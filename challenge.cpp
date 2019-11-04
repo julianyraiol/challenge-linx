@@ -26,9 +26,11 @@ void insert(Node *root, string word, string id){
 }
 
 void print(Node* root, string str, int &cont) 
-{   
+{      
+    if(cont == 20) return;
     if (root->finalized != false){ 
-        cout << str << endl; 
+        cont++;
+        cout << "#" << cont << "- " <<root->id << " - " << str << endl; 
     } 
 
     for (auto x:root->children){ 
@@ -49,16 +51,14 @@ int print_by_prefix(Node* root, string word){
         }
         root = root->children[letter];
     }
-
-    print(root, word, cont);
-    
+    print(root, word, cont); 
     return cont;
 }
 
 int main(){
 
     Node* root = new Node();
-    string str, str1;
+    string str, prefix_search;
     int cont = 0;
     
     Json::Reader reader;
@@ -70,12 +70,13 @@ int main(){
             reader.parse(str, json_line);
             insert(root, json_line["name"].asString(), json_line["id"].asString());
         }
+
+        cout << "Digite aqui sua consulta: ";
+        cin >> prefix_search;
+        print_by_prefix(root, prefix_search);
     }   
     else{
         cout << "Erro ao abrir o arquivo" << endl;
-    }   
-    
-    cout << endl << "==============" << endl;
+    }
 
-    print_by_prefix(root, "Refrigerador");
 }
