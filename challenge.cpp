@@ -14,8 +14,6 @@ struct Node{
 };
 
 void insert(Node *root, string word, string id){
-    
-    cout<< word << " == " << id << endl;
     int index;
     for(wchar_t letter:word){
         if(root->children.find(letter) == root->children.end()){
@@ -44,12 +42,12 @@ void print(Node* root, string str, int &cont)
 
 int print_by_prefix(Node* root, string word){
     int index, cont = 0;
-    for(char letter:word){
-        index = letter - 'a';
-        if(!root->children[index]){
-            return false;
+
+    for(wchar_t letter:word){
+        if(root->children.find(letter) == root->children.end()){
+             return false;
         }
-        root = root->children[index];
+        root = root->children[letter];
     }
 
     print(root, word, cont);
@@ -78,5 +76,6 @@ int main(){
     }   
     
     cout << endl << "==============" << endl;
-    print(root, str1, cont);
+
+    print_by_prefix(root, "Refrigerador");
 }
