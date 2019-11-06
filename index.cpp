@@ -66,9 +66,9 @@ class Trie{
     public:
         Trie();
         void add_element(string);
-        
-        void print_by_prefix(string);
-        void print();
+        Node search_prefix(string);
+        void show_all_occurences();
+        void show_occurences_by_prefix(string);
 };
 
 Trie::Trie(){
@@ -103,20 +103,38 @@ void Trie::print_all_elements(Node* current_node,string current_word){
     }
 }
 
-void Trie::print(){
+void Trie::show_all_occurences(){
     string current_word;
     print_all_elements(this->root, current_word);
+}
+
+void Trie::show_occurences_by_prefix(string prefix){
+
+    Node* aux = this->root;
+
+    for(wchar_t key:prefix){
+        if(!aux->has_key(key))
+            return;
+        aux = aux->get_node(key);
+    }
+
+    print_all_elements(aux, prefix);
 }
 
 int main(){
 
     Trie prefix_tree = Trie();
     string word;
-    prefix_tree.add_element("aaaaa");
-    prefix_tree.add_element("aaaaabbbb");
-    prefix_tree.add_element("ccccaaaa");
+    prefix_tree.add_element("Roupa de cachoro");
+    prefix_tree.add_element("Refrigerador Azul");
+    prefix_tree.add_element("Refrigerador Amarelo");
+    prefix_tree.add_element("Refrigerador Cinza");
 
-    prefix_tree.print();
+    prefix_tree.show_all_occurences();
+
+    cout << "=========" << endl;
+    
+    prefix_tree.show_occurences_by_prefix("Refrigerador");
 
     return 0;
 }
