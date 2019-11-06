@@ -24,7 +24,7 @@ class Node{
 };
 
 Node::Node(){
-    this->set_finalized_word(false);
+    this->finalized_word = false;
 }
 
 map<wchar_t, Node*> Node::get_children(){
@@ -32,7 +32,7 @@ map<wchar_t, Node*> Node::get_children(){
 }
 
 bool Node::has_key(wchar_t key){
-    return (this->children.find(key) != this->children.end());
+    return !(this->children.find(key) == this->children.end());
 }
 
 void Node::insert_node(wchar_t key){
@@ -59,17 +59,16 @@ string Node::get_id_product(){
     return this->id_product;
 }
 
-/* matizador
-violeta 
- */
 class Trie{
     private:
         Node* root;
+        void print_all_elements(Node*, string);
     public:
         Trie();
         void add_element(string);
-        void print_all_elements(Node*, string);
+        
         void print_by_prefix(string);
+        void print();
 };
 
 Trie::Trie(){
@@ -77,28 +76,36 @@ Trie::Trie(){
 }
 
 void Trie::add_element(string word){
+
+    Node* aux = this->root;
+
     for(wchar_t letter:word){
-        if(!this->root->has_key(letter)){
-            this->root->insert_node(letter);
+        if(!aux->has_key(letter)){
+            aux->insert_node(letter);
         }
-        this->root = this->root->get_node(letter);
+        aux = aux->get_node(letter);
     }
 
-    this->root->set_finalized_word(true);
+    aux->set_finalized_word(true);
 }
 
-void Trie::print_all_elements(Node *root, string str){
-    if(this->root->get_finalized_word()){
-        cout << str << endl;
+void Trie::print_all_elements(Node* current_node,string current_word){
+    if(current_node->get_finalized_word()){
+        cout << current_word << endl;
     }
 
-    for(auto element:this->root->get_children()){
-        if(element.second){
-            str.push_back((element.first)); 
-            print_all_elements(element.second, str);
-            str.pop_back(); 
+    for(auto node:current_node->get_children()){
+        if(node.second){
+            current_word.push_back((node.first)); 
+            print_all_elements(node.second, current_word);
+            current_word.pop_back(); 
         }
     }
+}
+
+void Trie::print(){
+    string current_word;
+    print_all_elements(this->root, current_word);
 }
 
 int main(){
@@ -109,7 +116,7 @@ int main(){
     prefix_tree.add_element("aaaaabbbb");
     prefix_tree.add_element("ccccaaaa");
 
-    prefix_tree.print_all_elements(word);
+    prefix_tree.print();
 
     return 0;
 }
