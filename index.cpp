@@ -107,19 +107,27 @@ void Trie::print_all_elements(Node* current_node,string current_word){
 
 void Trie::show_all_occurences(){
     string current_word;
-    print_all_elements(this->root, current_word);
+    if(!this->root->get_children().empty()){
+        print_all_elements(this->root, current_word);
+    }
+    else
+        cout << "Nenhum produto foi inserido." << endl;
 }
 
 void Trie::show_occurences_by_prefix(string prefix){
-    Node* aux = this->root;
-    
-    for(wchar_t key:prefix){
-        if(!aux->has_key(key))
-            return;
-        aux = aux->get_node(key);
-    }
 
-    print_all_elements(aux, prefix);
+    Node* aux = this->root;
+
+    if(!aux->get_children().empty()){
+        for(wchar_t key:prefix){
+            if(!aux->has_key(key))
+                return;
+            aux = aux->get_node(key);
+        }
+        print_all_elements(aux, prefix);
+    }
+    else
+        cout << "Nenhum produto foi inserido." << endl;
 }
 
 class Processing{
@@ -133,7 +141,6 @@ class Processing{
 };
 
 Processing::Processing(string path_json){
-    
     this->path_json = path_json;
     this->prefix_products = new Trie();
 }
@@ -143,9 +150,9 @@ void Processing::read_products(){
     Json::Value json_line;
     string str_line, name_product, id_product;
 
-    try{
-        ifstream file_json(this->path_json);
-        while (getline(file_json, str_line)){
+    ifstream file_json(this->path_json);
+    if(file_json.is_open()){
+            while (getline(file_json, str_line)){
 
             reader.parse(str_line, json_line);
 
@@ -154,30 +161,21 @@ void Processing::read_products(){
             
             this->prefix_products->add_element(name_product, id_product);
         }
-    }catch(exception &e){
-        cout << "[ERRO] Falha ao abrir o arquivo" << endl;  
     }
+    else
+        cout << "Falha ao abrir arquivo Json" << endl;
+}
+
+void Processing::list_products(){
+    this->prefix_products->show_all_occurences();
 }
 
 int main(){
 
     string PATH_JSON = "catalogo_produtos.json";
-
+    
     Processing process = Processing(PATH_JSON);
     process.read_products();
-    //process.list_products();
-
-    /*string word;
-    prefix_tree.add_element("Roupa de cachoro", "1234");
-    prefix_tree.add_element("Refrigerador Azul", "12345");
-    prefix_tree.add_element("Refrigerador Amarelo", "123467");
-    prefix_tree.add_element("Refrigerador Cinza", "1234678");
-
-    prefix_tree.show_all_occurences();
-
-    cout << "=========" << endl;
-
-    prefix_tree.show_occurences_by_prefix("Refrigerador");*/
-
+    process.list_products();
     return 0;
 }
