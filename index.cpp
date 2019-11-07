@@ -1,4 +1,5 @@
 #include <bits/stdc++.h>
+#include <jsoncpp/json/json.h>
 
 using namespace std;
 
@@ -65,8 +66,7 @@ class Trie{
         void print_all_elements(Node*, string);
     public:
         Trie();
-        void add_element(string);
-        Node search_prefix(string);
+        void add_element(string, string);
         void show_all_occurences();
         void show_occurences_by_prefix(string);
 };
@@ -75,11 +75,11 @@ Trie::Trie(){
     this->root = new Node();
 }
 
-void Trie::add_element(string word){
+void Trie::add_element(string product, string id_product){
 
     Node* aux = this->root;
 
-    for(wchar_t letter:word){
+    for(wchar_t letter:product){
         if(!aux->has_key(letter)){
             aux->insert_node(letter);
         }
@@ -87,9 +87,11 @@ void Trie::add_element(string word){
     }
 
     aux->set_finalized_word(true);
+    aux->set_id_product(id_product);
 }
 
 void Trie::print_all_elements(Node* current_node,string current_word){
+    
     if(current_node->get_finalized_word()){
         cout << current_word << endl;
     }
@@ -109,9 +111,8 @@ void Trie::show_all_occurences(){
 }
 
 void Trie::show_occurences_by_prefix(string prefix){
-
     Node* aux = this->root;
-
+    
     for(wchar_t key:prefix){
         if(!aux->has_key(key))
             return;
@@ -121,20 +122,62 @@ void Trie::show_occurences_by_prefix(string prefix){
     print_all_elements(aux, prefix);
 }
 
+class Processing{
+    private:
+        Trie* prefix_products;
+        string path_json;
+    public:
+        Processing(string);
+        void read_products();
+        void list_products();
+};
+
+Processing::Processing(string path_json){
+    
+    this->path_json = path_json;
+    this->prefix_products = new Trie();
+}
+
+void Processing::read_products(){
+    Json::Reader reader;
+    Json::Value json_line;
+    string str_line, name_product, id_product;
+
+    try{
+        ifstream file_json(this->path_json);
+        while (getline(file_json, str_line)){
+
+            reader.parse(str_line, json_line);
+
+            id_product = json_line["id"].asString();
+            name_product = json_line["name"].asString();
+            
+            this->prefix_products->add_element(name_product, id_product);
+        }
+    }catch(exception &e){
+        cout << "[ERRO] Falha ao abrir o arquivo" << endl;  
+    }
+}
+
 int main(){
 
-    Trie prefix_tree = Trie();
-    string word;
-    prefix_tree.add_element("Roupa de cachoro");
-    prefix_tree.add_element("Refrigerador Azul");
-    prefix_tree.add_element("Refrigerador Amarelo");
-    prefix_tree.add_element("Refrigerador Cinza");
+    string PATH_JSON = "catalogo_produtos.json";
+
+    Processing process = Processing(PATH_JSON);
+    process.read_products();
+    //process.list_products();
+
+    /*string word;
+    prefix_tree.add_element("Roupa de cachoro", "1234");
+    prefix_tree.add_element("Refrigerador Azul", "12345");
+    prefix_tree.add_element("Refrigerador Amarelo", "123467");
+    prefix_tree.add_element("Refrigerador Cinza", "1234678");
 
     prefix_tree.show_all_occurences();
 
     cout << "=========" << endl;
-    
-    prefix_tree.show_occurences_by_prefix("Refrigerador");
+
+    prefix_tree.show_occurences_by_prefix("Refrigerador");*/
 
     return 0;
 }
