@@ -1,4 +1,7 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <map>
+#include <string>
+#include <fstream>
 #include <jsoncpp/json/json.h>
 
 using namespace std;
@@ -187,14 +190,32 @@ void Processing::list_all_products_by_prefix(string product_name){
 }
 
 void Processing::main_process(){
-    string option, product_name;
-
+    string product_name;
+    string message = "1- Listar todos os produtos \n2- Listar por tipo de produto\n";
+    
+    int option;
+    bool is_running = true;
+    
     this->read_products();
+    
+    while (is_running){
+        cout << endl << message << endl;
+        cin >> option;
 
-    cout << "Digite aqui sua consulta: ";
-    cin >> product_name;
-
-    this->prefix_products->show_occurences_by_prefix(product_name);
+        switch (option){
+            case 1:
+                this->prefix_products->show_all_occurences();
+                break;
+            
+            case 2:
+                cout << "\nDigite aqui sua consulta: ";
+                cin >> product_name;
+                this->prefix_products->show_occurences_by_prefix(product_name); 
+                break;
+            default:
+                break;
+        }
+    }
 }
 
 int main(){
@@ -204,5 +225,6 @@ int main(){
     Processing process = Processing(PATH_JSON);
 
     process.main_process();
+
     return 0;
 }
