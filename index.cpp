@@ -63,7 +63,7 @@ string Node::get_id_product(){
 class Trie{
     private:
         Node* root;
-        void print_all_elements(Node*, string);
+        void print_all_elements(Node*, string, int&);
     public:
         Trie();
         void add_element(string, string);
@@ -90,16 +90,19 @@ void Trie::add_element(string product, string id_product){
     aux->set_id_product(id_product);
 }
 
-void Trie::print_all_elements(Node* current_node,string current_word){
+void Trie::print_all_elements(Node* current_node,string current_word, int &all_occurences){
     
+    if(all_occurences >= 20) return;
+
     if(current_node->get_finalized_word()){
-        cout << current_word << endl;
+        all_occurences++;
+        cout << "#" << all_occurences << " - " << current_node->get_id_product() << " - " << current_word << endl;
     }
 
     for(auto node:current_node->get_children()){
         if(node.second){
             current_word.push_back((node.first)); 
-            print_all_elements(node.second, current_word);
+            print_all_elements(node.second, current_word, all_occurences);
             current_word.pop_back(); 
         }
     }
@@ -107,8 +110,9 @@ void Trie::print_all_elements(Node* current_node,string current_word){
 
 void Trie::show_all_occurences(){
     string current_word;
+    int all_occurences=0;
     if(!this->root->get_children().empty()){
-        print_all_elements(this->root, current_word);
+        print_all_elements(this->root, current_word, all_occurences);
     }
     else
         cout << "Nenhum produto foi inserido." << endl;
@@ -117,6 +121,7 @@ void Trie::show_all_occurences(){
 void Trie::show_occurences_by_prefix(string prefix){
 
     Node* aux = this->root;
+    int all_occurences = 0;
 
     if(!aux->get_children().empty()){
         for(wchar_t key:prefix){
@@ -124,7 +129,7 @@ void Trie::show_occurences_by_prefix(string prefix){
                 return;
             aux = aux->get_node(key);
         }
-        print_all_elements(aux, prefix);
+        print_all_elements(aux, prefix, all_occurences);
     }
     else
         cout << "Nenhum produto foi inserido." << endl;
@@ -137,7 +142,9 @@ class Processing{
     public:
         Processing(string);
         void read_products();
-        void list_products();
+        void list_all_products();
+        void list_all_products_by_prefix(string);
+        void main_process();
 };
 
 Processing::Processing(string path_json){
@@ -166,8 +173,28 @@ void Processing::read_products(){
         cout << "Falha ao abrir arquivo Json" << endl;
 }
 
-void Processing::list_products(){
+void Processing::list_all_products(){
     this->prefix_products->show_all_occurences();
+}
+
+void Processing::list_all_products_by_prefix(string product_name){
+
+    if(!product_name.empty()){
+        this->prefix_products->show_occurences_by_prefix(product_name);
+    }
+    else
+        cout << "Nenhum produto especificado para consulta." << endl;
+}
+
+void Processing::main_process(){
+    string option, product_name;
+
+    this->read_products();
+
+    cout << "Digite aqui sua consulta: ";
+    cin >> product_name;
+
+    this->prefix_products->show_occurences_by_prefix(product_name);
 }
 
 int main(){
@@ -175,7 +202,7 @@ int main(){
     string PATH_JSON = "catalogo_produtos.json";
     
     Processing process = Processing(PATH_JSON);
-    process.read_products();
-    process.list_products();
+
+    process.main_process();
     return 0;
 }
