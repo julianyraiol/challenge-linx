@@ -95,7 +95,7 @@ void Trie::add_element(string product, string id_product){
 
 void Trie::print_all_elements(Node* current_node,string current_word, int &all_occurences){
     
-    if(all_occurences >= 20) return;
+    // // if(all_occurences >= 20) return;
 
     if(current_node->get_finalized_word()){
         all_occurences++;
@@ -191,7 +191,7 @@ void Processing::list_all_products_by_prefix(string product_name){
 
 void Processing::main_process(){
     string product_name;
-    string message = "1- Listar todos os produtos \n2- Listar por tipo de produto\n";
+    string message = "1- Listar todos os produtos \n2- Listar por tipo de produto\n3- Sair";
     
     int option;
     bool is_running = true;
@@ -206,13 +206,16 @@ void Processing::main_process(){
             case 1:
                 this->prefix_products->show_all_occurences();
                 break;
-            
             case 2:
                 cout << "\nDigite aqui sua consulta: ";
                 cin >> product_name;
                 this->prefix_products->show_occurences_by_prefix(product_name); 
                 break;
+            case 3:
+                is_running = false;
+                break;
             default:
+                cout << "Insira uma opção correta." << endl;
                 break;
         }
     }
@@ -221,10 +224,14 @@ void Processing::main_process(){
 int main(){
 
     string PATH_JSON = "catalogo_produtos.json";
-    
+    string product_name;
     Processing process = Processing(PATH_JSON);
-
-    process.main_process();
+    
+    process.read_products();
+    
+    cout << "Digite sua consulta: ";
+    getline(cin, product_name);
+    process.list_all_products_by_prefix(product_name);
 
     return 0;
 }
