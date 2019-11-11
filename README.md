@@ -1,4 +1,4 @@
-# Linx Challange 
+# Linx Challenge 
 
 Projeto implementado utilizando a linguagem de programação C++ e aplicando o algoritmo de busca de padrões em strings [KMP (Knuth-Morris-Pratt)](https://www.ime.usp.br/~pf/estruturas-de-dados/aulas/kmp.html). 
 
@@ -18,7 +18,7 @@ Este projeto contém duas pastas principais:
 |   |-- processing.h
 |   |-- kmp.h
 |   |-- json.hpp   
-|   index.cpp
+|-- index.cpp
 ```
 
 ### Instalação

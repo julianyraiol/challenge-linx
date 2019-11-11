@@ -16,6 +16,7 @@ class Processing{
         void print_product(int, string, string);
     public:
         Processing(string);
+        
         void read_products();
         void list_all_products();
         void list_all_products_by_prefix(string);
@@ -81,3 +82,4 @@ void Processing::list_all_products(){
         print_product(i++, product.first, product.second);
     }
 }
+
