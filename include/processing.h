@@ -16,10 +16,12 @@ class Processing{
         void print_product(int, string, string);
     public:
         Processing(string);
-        
+
         void read_products();
         void list_all_products();
         void list_all_products_by_prefix(string);
+
+        void main();
 };
 
 Processing::Processing(string path_json){
@@ -83,3 +85,17 @@ void Processing::list_all_products(){
     }
 }
 
+void Processing::main(){
+    string product_name;
+
+    read_products();
+
+    while(true){
+        cout << "Digite aqui sua consulta: ";
+        getline(cin, product_name);
+         
+        list_all_products_by_prefix(product_name);
+       
+        cout << endl;
+    }
+}
