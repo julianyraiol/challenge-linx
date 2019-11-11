@@ -3,9 +3,11 @@
 #include <string>
 #include <fstream>
 #include <algorithm> 
-#include <jsoncpp/json/json.h>
+#include "json.hpp"
 
 using namespace std;
+using json::JSON;
+
 
 class KMP{
     private:
@@ -57,9 +59,10 @@ bool KMP::search_pattern(){
 
 class Processing{
     private:
-        map<int64_t, string> list_products;
+        map<string, string> list_products;
         string path_json;
 
+        void print_product(int, string, string);
     public:
         Processing(string);
         void read_products();
@@ -71,20 +74,23 @@ Processing::Processing(string path_json){
     this->path_json = path_json;
 }
 
+void Processing::print_product(int position, string id_product, string name_product){
+    cout << "#" << position << " - " << id_product << " - " << name_product << endl;
+}
+
 void Processing::read_products(){
-    
-    Json::Reader reader;
-    Json::Value json_line;
-    string str_line, name_product; id_product;
+
+    string str_line, name_product, id_product;
 
     ifstream file_json(this->path_json);
     if(file_json.is_open()){
             while (getline(file_json, str_line)){
 
-            reader.parse(str_line, json_line);
+            JSON Obj = JSON::Load(str_line);
 
-            id_product = json_line["id"].asInt64();
-            name_product = json_line["name"].asString();
+            id_product = Obj["id"].ToString();
+            name_product = Obj["name"].ToString();
+
             this->list_products[id_product] = name_product;
         }
     }
@@ -100,7 +106,7 @@ void Processing::list_all_products_by_prefix(string pattern){
 
         kmp->state_process();
         if (kmp->search_pattern())
-            cout << "#" << i++ << " - " << product.first << " - " << product.second << endl;
+            print_product(i++, product.first, product.second);
 
         if(i == 21)
             break;
@@ -110,7 +116,7 @@ void Processing::list_all_products_by_prefix(string pattern){
 void Processing::list_all_products(){
     int i = 1;
     for(auto product:this->list_products){
-        cout << "#" << i++ << " - " << product.first  << " - " << product.second << endl;
+        print_product(i++, product.first, product.second);
     }
 }
 
