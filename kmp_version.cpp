@@ -2,6 +2,7 @@
 #include <vector>
 #include <string>
 #include <fstream>
+#include <algorithm> 
 #include <jsoncpp/json/json.h>
 
 using namespace std;
@@ -45,7 +46,8 @@ bool KMP::search_pattern(){
         while(j >= 0 && this->text[i] != this->pattern[j]){
             j = this->state[j];
         } 
-        i++; j++;
+        i++; 
+        j++;
         if(j == size_pattern){
             return true;
         }
@@ -86,10 +88,13 @@ string Product::get_name_product(){
     return name_product;
 }
 
+
 class Processing{
     private:
-        vector<Product*> list_products;
+        //vector<Product*> list_products;
+        map<string, string> list_products;
         string path_json;
+
     public:
         Processing(string);
         void read_products();
@@ -115,8 +120,8 @@ void Processing::read_products(){
 
             id_product = json_line["id"].asString();
             name_product = json_line["name"].asString();
-
-            this->list_products.push_back(new Product(id_product, name_product));
+            this->list_products[id_product] = name_product;
+            //this->list_products.push_back(new Product(id_product, name_product));
         }
     }
     else
@@ -125,14 +130,13 @@ void Processing::read_products(){
 
 void Processing::list_all_products_by_prefix(string pattern){
     
-
     int i = 1;
     for(auto product:this->list_products){
-        KMP *kmp = new KMP(product->get_name_product(), pattern);
+        KMP *kmp = new KMP(product.second, pattern);
 
         kmp->state_process();
         if (kmp->search_pattern())
-            cout << "#" << i++ << " - " << product->get_id_product() << " - " << product->get_name_product() << endl;
+            cout << "#" << i++ << " - " << product.first << " - " << product.second << endl;
 
         if(i == 21)
             break;
@@ -142,7 +146,7 @@ void Processing::list_all_products_by_prefix(string pattern){
 void Processing::list_all_products(){
     int i = 1;
     for(auto product:this->list_products){
-        cout << "#" << i++ << " - " << product->get_id_product() << " - " << product->get_name_product() << endl;
+        cout << "#" << i++ << " - " << product.first  << " - " << product.second << endl;
     }
 }
 
@@ -150,9 +154,14 @@ int main(){
 
     string PATH_JSON = "catalogo_produtos.json";
     Processing process = Processing(PATH_JSON);
-    
+    string product_name;
+
     process.read_products();
-    process.list_all_products_by_prefix("LEGO");
+
+    cout << "Digite aqui sua consulta: ";
+    getline(cin, product_name);
+
+    process.list_all_products_by_prefix(product_name);
    
     return 0;
 } 
