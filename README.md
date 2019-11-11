@@ -1,6 +1,25 @@
 # Linx Challange 
 
-Projeto implementado utilizando a linguagem de programação C++ e aplicando o algoritmo de busca de padrões em strings KMP (Knuth-Morris-Pratt). 
+Projeto implementado utilizando a linguagem de programação C++ e aplicando o algoritmo de busca de padrões em strings [KMP (Knuth-Morris-Pratt)](https://www.ime.usp.br/~pf/estruturas-de-dados/aulas/kmp.html). 
+
+### Estrutura do projeto
+
+Este projeto contém duas pastas principais:
+
+* **data**: Contém o arquivo Json a ser processado
+* **include**: Contém todas as bibliotecas do projeto
+
+```
+|-- README.md
+|
+|-- data
+|   |-- catalogo_produtos.json
+|-- include
+|   |-- processing.h
+|   |-- kmp.h
+|   |-- json.hpp   
+|   index.cpp
+```
 
 ### Instalação
 Para a leitura do arquivo Json, foi empregado a biblioteca [SimpleJSON](https://github.com/nbsdx/SimpleJSON).
@@ -10,13 +29,13 @@ $ git clone https://github.com/julianyraiol/challenge-linx.git
 $ cd challenge-linx
 ```
 
-## Executar
+### Executar
 ```bash
 $ g++ index.cpp -o processador; ./processador
 $ Digite aqui sua consulta: 
 ```
 
-## Exemplo de Consulta
+### Exemplo de Consulta
 ```bash
 $ Digite aqui sua consulta: Notebook
 
@@ -42,6 +61,8 @@ $ Digite aqui sua consulta: Notebook
 #20 - 2147454515 - Notebook Acer®, Intel Core i5-7200U, 4GB, 1TB, Tela de 15.6'', Gráficos HD Intel® 620, Aspire 5 - A515-51-52M7
 
 ```
+
+
 
 
 
