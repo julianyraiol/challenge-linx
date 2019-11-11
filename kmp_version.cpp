@@ -55,44 +55,9 @@ bool KMP::search_pattern(){
     return false;
 }
 
-class Product{
-    private:
-        string id_product;
-        string name_product;
-    public:
-        Product(string, string);
-        void set_id_product(string);
-        void set_name_product(string);
-        string get_id_product();
-        string get_name_product();
-};
-
-Product::Product(string id_product, string name_product){
-    this->id_product = id_product;
-    this->name_product = name_product;
-}
-
-void Product::set_id_product(string id_product){
-    this->id_product = id_product;
-}
-
-void Product::set_name_product(string name_product){
-    this->name_product = name_product;
-}
-
-string Product::get_id_product(){
-    return id_product;
-}
-
-string Product::get_name_product(){
-    return name_product;
-}
-
-
 class Processing{
     private:
-        //vector<Product*> list_products;
-        map<string, string> list_products;
+        map<int64_t, string> list_products;
         string path_json;
 
     public:
@@ -110,7 +75,7 @@ void Processing::read_products(){
     
     Json::Reader reader;
     Json::Value json_line;
-    string str_line, name_product, id_product;
+    string str_line, name_product; id_product;
 
     ifstream file_json(this->path_json);
     if(file_json.is_open()){
@@ -118,10 +83,9 @@ void Processing::read_products(){
 
             reader.parse(str_line, json_line);
 
-            id_product = json_line["id"].asString();
+            id_product = json_line["id"].asInt64();
             name_product = json_line["name"].asString();
             this->list_products[id_product] = name_product;
-            //this->list_products.push_back(new Product(id_product, name_product));
         }
     }
     else
