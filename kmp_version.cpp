@@ -74,8 +74,8 @@ Processing::Processing(string path_json){
     this->path_json = path_json;
 }
 
-void Processing::print_product(int position, string id_product, string name_product){
-    cout << "#" << position << " - " << id_product << " - " << name_product << endl;
+void Processing::print_product(int occurences, string id_product, string name_product){
+    cout << "#" << occurences << " - " << id_product << " - " << name_product << endl;
 }
 
 void Processing::read_products(){
@@ -100,15 +100,15 @@ void Processing::read_products(){
 
 void Processing::list_all_products_by_prefix(string pattern){
     
-    int i = 1;
+    int occurences = 1;
+    bool is_finish = false;
     for(auto product:this->list_products){
         KMP *kmp = new KMP(product.second, pattern);
-
         kmp->state_process();
-        if (kmp->search_pattern())
-            print_product(i++, product.first, product.second);
 
-        if(i == 21)
+        if (kmp->search_pattern())
+            print_product(occurences++, product.first, product.second);
+        if(occurences > 20)
             break;
     }
 }
@@ -128,10 +128,14 @@ int main(){
 
     process.read_products();
 
-    cout << "Digite aqui sua consulta: ";
-    getline(cin, product_name);
-
-    process.list_all_products_by_prefix(product_name);
-   
+    while(true){
+        cout << "Digite aqui sua consulta: ";
+        getline(cin, product_name);
+         
+        process.list_all_products_by_prefix(product_name);
+       
+        cout << endl;
+    }
+    
     return 0;
 } 
